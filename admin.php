@@ -8,11 +8,27 @@ if (isset($_POST["pw"])){
 	
 if ($_POST["pw"]=="thisisapassword"){
 	if (isset($_POST["new"])){
+	    if (isset($_POST["imgrot"])){
+	        $imgrot=$_POST["imgrot"];
+	    }else{
+	        $imgrot=[];
+	    }
+	    if (isset($_POST["status"])){
+	        $status=$_POST["status"];
+	    }else{
+	        $status=[];
+	    }
 		$books=explode("|",file_get_contents("books.txt"));
 		$count=0;
 		$fp=fopen($path,"w");
 		foreach($csv as $line){
-			if(in_array($count,$_POST["status"])){
+		    if(in_array('img'.$count,$imgrot)){
+		        $image = new Imagick('photos/'.$line[7]);
+		        $image->rotateimage("#000", 90); // rotate 90 degrees CW
+		        $image->writeImage('photos/'.$line[7]);
+		        echo "<p>Rotated image ".$line[7]."</p>";
+		    }
+			if(in_array($count,$status)){
 				if($line[0]=="1"){
 					$nstatus=false;
 				}else{
@@ -30,7 +46,9 @@ if ($_POST["pw"]=="thisisapassword"){
 			$count=$count+1;
 		}
 		fclose($fp);
+		require "data.php";
 		echo "<p>Updated!</p>";
+	
 	}else{
 
 
@@ -41,7 +59,7 @@ foreach ($csv as $line){
 	echo "<tr><td><input type='checkbox' value='".$count."' name='status[]'></td>";
 	foreach ($line as $field){
 		if (strpos($field,".png")>0 or strpos($field,".jpg")>0 or strpos($field,".jpeg")>0){
-			echo "<td><img style='max-height:300px' src='photos/".$field."'></td>";
+			echo "<td><img style='max-height:300px' src='photos/".$field."'><br><label>rotate? <input type='checkbox' value='img".$count."' name='imgrot[]'></label></td>";
 		}else{
 			echo "<td>".$field."</td>";
 		}
