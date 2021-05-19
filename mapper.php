@@ -5,6 +5,28 @@ ini_set('display_errors', 1);
 $path=$_SERVER["DOCUMENT_ROOT"]."/protected/mapdata.csv";
 $to="TARfanmap@gmail.com";
 
+function autoRotateImage($image) {
+    $orientation = $image->getImageOrientation();
+
+    switch($orientation) {
+        case imagick::ORIENTATION_BOTTOMRIGHT:
+            $image->rotateimage("#000", 180); // rotate 180 degrees
+        break;
+
+        case imagick::ORIENTATION_RIGHTTOP:
+            $image->rotateimage("#000", 90); // rotate 90 degrees CW
+        break;
+
+        case imagick::ORIENTATION_LEFTBOTTOM:
+            $image->rotateimage("#000", -90); // rotate 90 degrees CCW
+        break;
+    }
+
+    // Now that it's auto-rotated, make sure the EXIF data is correct in case the EXIF gets saved with the image!
+    //$image->setImageOrientation(imagick::ORIENTATION_TOPLEFT);
+}
+
+
 if (isset($_POST["lat"]) and isset($_POST["lng"]) and isset($_POST["book"]) and isset($_FILES["tar"]) and !empty($_FILES["tar"])){
 	$lat=fmod($_POST["lat"],90);
 	$lng=fmod($_POST["lng"],180);
@@ -70,6 +92,7 @@ if ($uploadOk == 0) {
   //if (move_uploaded_file($_FILES["tar"]["tmp_name"], $target_file)) {
   $img = new Imagick($_FILES['tar']['tmp_name']);
   $profiles = $img->getImageProfiles("icc", true);
+  autoRotateImage($img);
   $img->stripImage();
   $img->writeImage($target_file); 
 
@@ -87,14 +110,23 @@ fputcsv($fp,array($status,$book,$lat,$lng,$country,$region,$city,$time.".".$imag
 fclose($fp);
 
 echo "<p>The following data has been saved:</p><p><b>Latitude</b> ".$lat."<br><b>Longitude:</b> ".$lng."<br><b>Country: ".$country."</b><br><b>Region: ".$region."</b><br><b>City: ".$city."</b><br><b>Photo:</b> ".$time.".".$imageFileType."<br><b>Name:</b> ".$nimi."<br><b>Date: ".$otherdate."</b><br><br><b>Message:</b> ".$msg."<br><b>Rating:</b> ".($rating/2)."</p>
-<p><a href='index.php'>Go to the map</a></p><p> </p><p>If something went wrong, contact <a href='mailto:TARfanmap@gmail.com'>TARfanmap@gmail.com</a></p>";/*}
+<p><a href='index.php'>Go to the map</a>".($status?" - a direct link to your entry on the map can be found <a id='mmarker'>here</a>":"")."</p><p> </p><p>Would you like to also fill in a form a fan made about the book and the signatures? <a href='https://forms.gle/BCSGyHxbydnUeBsi9'>Answer some questions here</a></p><p>If something went wrong, contact <a href='mailto:TARfanmap@gmail.com'>TARfanmap@gmail.com</a></p>";/*}
    else {
     echo "<p>Sorry, there was an error uploading your file.</p>";
   }*/
+  require "data.php";
+  echo "<script>var book='".$book."';</script>";
 }
 	
 
 
 }else{echo "<p>Sorry, but you need to fill out all mandatory fields.</p>";}
 
-?></div>
+
+
+?></div><script src="data.js"></script>
+<script>
+    var mm=document.getElementById("mmarker");
+    var nmarker=tars[book].length-1;
+    mm.src="https://theanthropocenereviewed.com/?marker="+nmarker+"&book="+book;
+</script>
