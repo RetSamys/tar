@@ -116,7 +116,7 @@ display:block;
 	  ?><option value="other">Other (type in)</option></select></p>
 	  <p id="hiddener" style="display:none;">Type in: <input id="booktitle" name="booktitle"></p>
 	  <p><label>4. Add a date of the book's arrival (optional): <br><input id="otherdate" name="otherdate" min="2021-01-01" type="date"></p>
-	  <p>5. Additional message / review (optional, max 4000 characters): 
+	  <p>5. Additional message / review (optional, max 4000 characters):<br>(Also, tell us about the signature if there is one!) 
 	  <!--<input name="msg" id="msg">--><br><textarea style="width:100%" rows="5" name="msg" id="msg" maxlength="4000"></textarea></p>
 	  <p>6. Upload image (jpg/png max. 5MB)<span style="color:red">*</span> <input type="file" id="tar" name="tar" accept="image/png, image/jpeg"></p><p></p><b>Disclaimer:</b>  By submitting a photo <wbr>you confirm that you are <wbr>the copyright owner of that photo, <br>and also give us permission <wbr>to display that image on this website</b></p>
 	  <p>7. How would you rate the location on the map on a 5-star scale? (optional)</p><p><!-- from https://codepen.io/anefzaoui/pen/NWPZzMa -->
@@ -134,7 +134,7 @@ display:block;
 
 </fieldset></p>
 	  <p><span style="color:red">*</span>mandatory</p>
-	  <p><button onclick="next();return false;">Next</button></p>
+	  <p><button disabled id="dsbld" onclick="next();return false;">Next</button></p>
     </div><div id="part2">
 <!--<script src="http://cdn-geoweb.s3.amazonaws.com/esri-leaflet-geocoder/0.0.1-beta.5/esri-leaflet-geocoder.js"></script>
 <link rel="stylesheet" type="text/css" href="http://cdn-geoweb.s3.amazonaws.com/esri-leaflet-geocoder/0.0.1-beta.5/esri-leaflet-geocoder.css">-->
@@ -191,6 +191,7 @@ marker.on('dragend', function (e) {
 });
 */
 map.on('click', function (e) {
+    document.getElementById("dsbld").disabled=false;
 results.clearLayers();
 var mark=L.marker(e.latlng);
 results.addLayer(mark);
