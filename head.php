@@ -146,6 +146,10 @@ a{
     100% { opacity:1; }
 }
 
+.skip{
+    animation-duration:0s !important;
+}
+
 
 #map{
 	height:90vh;
@@ -157,10 +161,24 @@ a{
     filter: invert(1) opacity(0.5);
 }
 .leaflet-popup-content{
+    max-height:60vh;
+    overflow:auto;
+    /*font-size:2.5vw;*/
+}
+
+@media only screen and (max-width: 900px) {
+.leaflet-popup-content{
     max-height:70vh;
     overflow:auto;
     font-size:2.5vw;
 }
+
+.marker-cluster span {
+    font-size: 2.75vw;
+}
+
+}
+
 .leaflet-popup-content img{
 	max-width:100%;
 }
@@ -173,14 +191,14 @@ a{
     margin-top: 2vw !important;
 }
 
-#gallery div{max-width:46%; padding:2%;display:inline-block;font-size: 20px;
+#gallery div{max-width:46%; padding:1%;display:inline-block;font-size: 20px;
     font-weight: normal;}
 #gallery img{
 	max-width:100%;
 }
 </style>
 
-</head><body>
+</head><body onclick="document.getElementById('pathmain').classList.add('skip');document.getElementsByClassName('content-outside')[0].classList.add('skip');document.getElementsByClassName('sidenav')[0].classList.add('skip');">
 <svg id="svganim" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 35">
   <defs>
     <linearGradient id="gradient" x1="0%" y1="0%" x2="0%" y2="100%">
